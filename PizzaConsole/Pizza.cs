@@ -15,8 +15,6 @@ public class Pizza
     
     public void DisplayBill(int quantity)
     {
-        // two digit after decimal point for Price
-        
         Console.WriteLine($"{quantity} {Name} : {quantity} * {Price:0.00}€");
         foreach (var ingredient in Ingredients) {
             Console.WriteLine($"{ingredient.Name} {ingredient.Quantity.Number * quantity} {ingredient.Quantity.Unit}");

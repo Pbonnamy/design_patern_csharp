@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using PizzaConsole;
+﻿using PizzaConsole;
 
 class Program
 {
@@ -34,10 +32,10 @@ class Program
 
         var availablePizzas = new List<Pizza>() { pizza1, pizza2, pizza3 };
         
-        MainLoop(availablePizzas);
+        Loop(availablePizzas);
     }
 
-    private static void MainLoop(List<Pizza> availablePizzas) {
+    private static void Loop(List<Pizza> availablePizzas) {
         while (true) {
             Console.WriteLine();
             Console.Write("Entrez une commande (votre commande doit être sous la forme : \"6 Pizza1, 2 Pizza2, {quantité} {nom}\") : ");
@@ -49,7 +47,7 @@ class Program
             
             foreach (var input in order) {
                 try {
-                    var (quantity, pizza) = ParsePizza(input, availablePizzas);
+                    var (quantity, pizza) = ParsePizzaInput(input, availablePizzas);
                     
                     var pizzaInList = pizzas.Find(p => p.pizza.Name == pizza.Name);
                     
@@ -72,7 +70,7 @@ class Program
         }
     }
 
-    private static (int quantity, Pizza pizza) ParsePizza(string pizza, List<Pizza> availablePizzas) {
+    private static (int quantity, Pizza pizza) ParsePizzaInput(string pizza, List<Pizza> availablePizzas) {
         var pizzaOrder = pizza.Trim();
         var elements = pizzaOrder.Split(' ', 2);
 
