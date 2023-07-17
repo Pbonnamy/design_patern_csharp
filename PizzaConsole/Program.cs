@@ -45,6 +45,8 @@ class Program
             
             var pizzas = new List<(int quantity, Pizza pizza)>();
             
+            var error = false;
+            
             foreach (var input in order) {
                 try {
                     var (quantity, pizza) = ParsePizzaInput(input, availablePizzas);
@@ -58,13 +60,14 @@ class Program
                         pizzas.Add((quantity, pizza));
                     }
                 } catch (Exception e) {
+                    error = true;
                     Console.WriteLine();
                     Console.WriteLine(e.Message);
                     break;
                 }
             }
             
-            if (pizzas.Count == 0) continue;
+            if (error) continue;
             
             HandleChoices(pizzas);
         }
@@ -103,9 +106,12 @@ class Program
                     
                     var total = 0m;
                     foreach (var (pizzaQuantity, pizzaItem) in pizzas) {
+                        Console.WriteLine();
                         total += pizzaQuantity * pizzaItem.Price;
                         pizzaItem.DisplayBill(pizzaQuantity);
                     }
+                    
+                    Console.WriteLine();
                     Console.WriteLine($"Prix total : {total:0.00}€");
                     
                     break;
@@ -114,6 +120,7 @@ class Program
                     Console.WriteLine();
                     
                     foreach (var (_, pizzaItem) in pizzas) {
+                        Console.WriteLine();
                         pizzaItem.DisplayRecipe();
                     }
 
@@ -125,7 +132,3 @@ class Program
         }
     }
 }
-
-
-
-

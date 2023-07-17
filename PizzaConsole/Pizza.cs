@@ -17,7 +17,7 @@ public class Pizza
     {
         Console.WriteLine($"{quantity} {Name} : {quantity} * {Price:0.00}€");
         foreach (var ingredient in Ingredients) {
-            Console.WriteLine($"{ingredient.Name} {ingredient.Quantity.Number * quantity} {ingredient.Quantity.Unit}");
+            Console.WriteLine($"{ingredient.Name} {ingredient.Quantity.Number} {ingredient.Quantity.Unit}");
         }
     }
     
