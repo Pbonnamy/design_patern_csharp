@@ -90,6 +90,26 @@ class Program
         throw new ArgumentException($"La pizza \"{pizzaName}\" n'existe pas");
     }
 
+    private static List<Ingredient> getIngredientsFromPizzas(List<(int quantity, Pizza pizza)> pizzas)
+    {
+        var ingredients = new List<Ingredient>();
+        
+        foreach (var (pizzaQuantity, pizzaItem) in pizzas) {
+            foreach (var ingredient in pizzaItem.Ingredients) {
+                var ingredientInList = ingredients.Find(i => i.Name == ingredient.Name);
+                            
+                if (ingredientInList != default) {
+                    ingredients.Remove(ingredientInList);
+                    ingredients.Add(new Ingredient(ingredient.Name, new Quantity(ingredientInList.Quantity.Number + ingredient.Quantity.Number * pizzaQuantity, ingredient.Quantity.Unit)));
+                } else {
+                    ingredients.Add(new Ingredient(ingredient.Name, new Quantity(ingredient.Quantity.Number * pizzaQuantity, ingredient.Quantity.Unit)));
+                }
+            }
+        }
+        
+        return ingredients;
+    }
+
     private static void HandleChoices(List<(int quantity, Pizza pizza)> pizzas) {
         while (true) {
             Console.WriteLine();
@@ -130,19 +150,7 @@ class Program
                 case "3":
                     Console.WriteLine();
                     
-                    var ingredients = new List<Ingredient>();
-                    foreach (var (pizzaQuantity, pizzaItem) in pizzas) {
-                        foreach (var ingredient in pizzaItem.Ingredients) {
-                            var ingredientInList = ingredients.Find(i => i.Name == ingredient.Name);
-                            
-                            if (ingredientInList != default) {
-                                ingredients.Remove(ingredientInList);
-                                ingredients.Add(new Ingredient(ingredient.Name, new Quantity(ingredientInList.Quantity.Number + ingredient.Quantity.Number * pizzaQuantity, ingredient.Quantity.Unit)));
-                            } else {
-                                ingredients.Add(new Ingredient(ingredient.Name, new Quantity(ingredient.Quantity.Number * pizzaQuantity, ingredient.Quantity.Unit)));
-                            }
-                        }
-                    }
+                    var ingredients = getIngredientsFromPizzas(pizzas);
                     
                     foreach (var ingredient in ingredients) {
                         ingredient.Display();
