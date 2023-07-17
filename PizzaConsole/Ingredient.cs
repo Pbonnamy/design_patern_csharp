@@ -10,4 +10,14 @@ public class Ingredient
         Name = name;
         Quantity = quantity;
     }
+    
+    public void Display()
+    {
+        Console.WriteLine($"{CapitalizedName()} : {Quantity.Number} {Quantity.Unit}");
+    }
+    
+    public string CapitalizedName()
+    {
+        return char.ToUpper(Name[0]) + Name[1..];
+    }
 }

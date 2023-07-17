@@ -95,7 +95,8 @@ class Program
             Console.WriteLine();
             Console.WriteLine("1 : Afficher la facture");
             Console.WriteLine("2 : Afficher les recettes");
-            Console.WriteLine("3 : Nouvelle commande");
+            Console.WriteLine("3 : Afficher les ingrédients utilisés");
+            Console.WriteLine("4 : Nouvelle commande");
             Console.WriteLine();
             Console.Write("Entrez votre choix : ");
             var choice = Console.ReadLine();
@@ -127,6 +128,36 @@ class Program
                     break;
                 }
                 case "3":
+                    Console.WriteLine();
+                    
+                    var ingredients = new List<Ingredient>();
+                    foreach (var (pizzaQuantity, pizzaItem) in pizzas) {
+                        foreach (var ingredient in pizzaItem.Ingredients) {
+                            var ingredientInList = ingredients.Find(i => i.Name == ingredient.Name);
+                            
+                            if (ingredientInList != default) {
+                                ingredients.Remove(ingredientInList);
+                                ingredients.Add(new Ingredient(ingredient.Name, new Quantity(ingredientInList.Quantity.Number + ingredient.Quantity.Number * pizzaQuantity, ingredient.Quantity.Unit)));
+                            } else {
+                                ingredients.Add(new Ingredient(ingredient.Name, new Quantity(ingredient.Quantity.Number * pizzaQuantity, ingredient.Quantity.Unit)));
+                            }
+                        }
+                    }
+                    
+                    foreach (var ingredient in ingredients) {
+                        ingredient.Display();
+                        
+                        foreach (var (pizzaQuantity, pizzaItem) in pizzas) {
+                            var ingredientInPizza = pizzaItem.Ingredients.Find(i => i.Name == ingredient.Name);
+                            
+                            if (ingredientInPizza != default) {
+                                Console.WriteLine($" - {pizzaItem.Name} : {ingredientInPizza.Quantity.Number * pizzaQuantity} {ingredientInPizza.Quantity.Unit}");
+                            }
+                        }
+                    }
+                    
+                    break;
+                case "4":
                     return;
             }
         }
