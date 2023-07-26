@@ -1,4 +1,6 @@
-﻿using PizzaConsole;
+﻿using System.Globalization;
+using PizzaConsole;
+using PizzaConsole.Exports;
 
 class Program
 {
@@ -110,6 +112,37 @@ class Program
         return ingredients;
     }
 
+    private static void GetBillFormat(String choice, List<(int quantity, Pizza pizza)> pizzas)
+    {
+        switch (choice)
+        {
+            case "2":
+                Visitor visitor = new XmlVisitor();
+                String command = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<command>";
+        
+                foreach (var pizzaElement in pizzas)
+                {
+                    command += $"\n<pizza>\n<quantity>{pizzaElement.quantity}</quantity>{pizzaElement.pizza.Accept(visitor)}</pizza>";
+                }
+                command += "\n</command>";
+                Console.WriteLine(command);
+                Console.WriteLine("Souhaitez vous l'enregistrer ?");
+                Console.Write("Oui (o), Non (n): ");
+                var choiceRegistering = Console.ReadLine();
+                if (choiceRegistering == "o")
+                {
+                    File.WriteAllText("bill.xml", command);
+                    Console.WriteLine("Commande enregistrée dans le fichier bill.xml");
+                }
+                break;
+            case "3":
+                return;
+            default:
+                Console.WriteLine("Choix non compris, veuillez réessayer");
+                break;
+        }
+    }
+    
     private static void HandleChoices(List<(int quantity, Pizza pizza)> pizzas) {
         while (true) {
             Console.WriteLine();
@@ -123,7 +156,18 @@ class Program
                     
             switch (choice) {
                 case "1": {
-                    Console.WriteLine();
+                    Console.WriteLine("Vous souhaitez afficher la facture sous quel format ?");
+                    Console.WriteLine("1. Console");
+                    Console.WriteLine("2. XML");
+                    Console.WriteLine("3. JSON");
+                    Console.Write("Entrez votre choix: ");
+                    var choiceBill = Console.ReadLine();
+
+                    if (choiceBill != "1" && choiceBill != null)
+                    {
+                        GetBillFormat(choiceBill, pizzas);
+                        break;
+                    }
                     
                     var total = 0m;
                     foreach (var (pizzaQuantity, pizzaItem) in pizzas) {

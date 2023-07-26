@@ -1,6 +1,6 @@
 ﻿namespace PizzaConsole;
 
-public class Pizza
+public class Pizza: IElement
 {
     public string Name { get; set; }
     public decimal Price { get; set; }
@@ -29,5 +29,10 @@ public class Pizza
             Console.WriteLine($"Ajouter {ingredient.Name}");
         }
         Console.WriteLine("Cuire la pizza");
+    }
+
+    public String Accept(Visitor visitor)
+    {
+        return visitor.visit(this);
     }
 }
