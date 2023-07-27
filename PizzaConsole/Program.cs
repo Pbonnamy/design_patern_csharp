@@ -77,7 +77,13 @@ class Program
                 }
                 foreach (var pizza in parsefile)
                 {
-                    pizzas.Add((1, pizza));
+                    var pizzaInList = pizzas.Find(p => p.pizza.Name == pizza.Name);
+                    if (pizzaInList != default) {
+                        pizzas.Remove(pizzaInList);
+                        pizzas.Add((pizzaInList.quantity + 1, pizza));
+                    } else {
+                        pizzas.Add((1, pizza));
+                    }
                 }
                 HandleChoices(pizzas);
                 continue;
@@ -147,47 +153,16 @@ class Program
         return ingredients;
     }
 
+
     private static void GetBillFormat(String choice, List<(int quantity, Pizza pizza)> pizzas)
     {
         switch (choice)
         {
             case "2":
-                Visitor visitor = new XmlVisitor();
-                String command = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<command>";
-                
-                foreach (var pizzaElement in pizzas)
-                {
-                    command += $"\n<pizza>\n<quantity>{pizzaElement.quantity}</quantity>{pizzaElement.pizza.Accept(visitor)}</pizza>";
-                }
-                command += "\n</command>";
-                Console.WriteLine(command);
-                Console.WriteLine("Souhaitez vous l'enregistrer ?");
-                Console.Write("Oui (o), Non (n): ");
-                var choiceRegistering = Console.ReadLine();
-                if (choiceRegistering == "o")
-                {
-                    File.WriteAllText("bill.xml", command);
-                    Console.WriteLine("Commande enregistrée dans le fichier bill.xml");
-                }
+                BillFormat.BillXml(pizzas);
                 break;
             case "3":
-                Visitor visitor2 = new JsonVisitor();
-                String command2 = "{\n\"command\": [";
-                foreach (var pizzaElement in pizzas)
-                {
-                    command2 += $"\n{{\n\"quantity\":\"{pizzaElement.quantity}\",{pizzaElement.pizza.Accept(visitor2)}}},";
-                }
-                command2 = command2.Remove(command2.Length - 1);
-                command2 += "\n]\n}}";
-                Console.WriteLine(command2);
-                Console.WriteLine("Souhaitez vous l'enregistrer ?");
-                Console.Write("Oui (o), Non (n): ");
-                var choiceRegistering2 = Console.ReadLine();
-                if (choiceRegistering2 == "o")
-                {
-                    File.WriteAllText("bill.json", command2);
-                    Console.WriteLine("Commande enregistrée dans le fichier bill.json");
-                }
+                BillFormat.BillJson(pizzas);
                 break;
             default:
                 Console.WriteLine("Choix non compris, veuillez réessayer");

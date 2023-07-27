@@ -2,7 +2,7 @@
 
 namespace PizzaConsole;
 
-public class Pizza: IElement
+public class Pizza: IElement, Composite
 {
     public string Name { get; set; }
     public decimal Price { get; set; }
@@ -36,5 +36,15 @@ public class Pizza: IElement
     public String Accept(Visitor visitor)
     {
         return visitor.visit(this);
+    }
+
+    public double GetCost()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetDescription()
+    {
+        throw new NotImplementedException();
     }
 }
