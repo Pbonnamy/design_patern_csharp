@@ -114,17 +114,19 @@ class Program
 
     private static void GetBillFormat(String choice, List<(int quantity, Pizza pizza)> pizzas)
     {
+        String totalPrice = "";
         switch (choice)
         {
             case "2":
                 Visitor visitor = new XmlVisitor();
                 String command = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<command>";
-        
+                
                 foreach (var pizzaElement in pizzas)
                 {
+                    totalPrice += pizzaElement.quantity * pizzaElement.pizza.Price;
                     command += $"\n<pizza>\n<quantity>{pizzaElement.quantity}</quantity>{pizzaElement.pizza.Accept(visitor)}</pizza>";
                 }
-                command += "\n</command>";
+                command += $"\n<totalPrice>{totalPrice}</totalPrice></command>";
                 Console.WriteLine(command);
                 Console.WriteLine("Souhaitez vous l'enregistrer ?");
                 Console.Write("Oui (o), Non (n): ");
@@ -136,7 +138,25 @@ class Program
                 }
                 break;
             case "3":
-                return;
+                Visitor visitor2 = new JsonVisitor();
+                String command2 = "{\n\"command\": [";
+                foreach (var pizzaElement in pizzas)
+                {
+                    totalPrice += pizzaElement.quantity * pizzaElement.pizza.Price;
+                    command2 += $"\n{{\n\"quantity\":\"{pizzaElement.quantity}\",{pizzaElement.pizza.Accept(visitor2)}}},";
+                }
+                command2 = command2.Remove(command2.Length - 1);
+                command2 += $"\n],\n\"totalPrice\": \"{totalPrice}\"\n}}";
+                Console.WriteLine(command2);
+                Console.WriteLine("Souhaitez vous l'enregistrer ?");
+                Console.Write("Oui (o), Non (n): ");
+                var choiceRegistering2 = Console.ReadLine();
+                if (choiceRegistering2 == "o")
+                {
+                    File.WriteAllText("bill.json", command2);
+                    Console.WriteLine("Commande enregistrée dans le fichier bill.json");
+                }
+                break;
             default:
                 Console.WriteLine("Choix non compris, veuillez réessayer");
                 break;

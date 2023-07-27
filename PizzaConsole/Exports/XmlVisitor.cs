@@ -6,15 +6,18 @@ public class XmlVisitor: Visitor
 {
     public String visit(Pizza pizza)
     {
-        String ingredients = "<ingredients>";
+        String ingredients = "";
 
         foreach (var ingredient in pizza.Ingredients)
         {
-            ingredients += $"\n<ingredient>\n<name>{ingredient.Name}</name>\n<quantity>{ingredient.Quantity.Number}</quantity>\n<unit>{ingredient.Quantity.Unit}</unit>\n</ingredient>";
+            ingredients += ingredient.Accept(this);
         }
-
-        ingredients += "</ingredients>";
-        return $"\n<name>{pizza.Name}</name>\n{ingredients}<price>{pizza.Price.ToString(CultureInfo.CurrentCulture)}</price>\n";
+        
+        return $"\n<name>{pizza.Name}</name>\n<ingredients>{ingredients}</ingredients>\n<price>{pizza.Price.ToString(CultureInfo.CurrentCulture)}</price>\n";
     }
-    
+
+    public string visit(Ingredient ingredient)
+    {
+        return $"\n<ingredient>\n<name>{ingredient.Name}</name>\n<quantity>{ingredient.Quantity.Number}</quantity>\n<unit>{ingredient.Quantity.Unit}</unit>\n</ingredient>";
+    }
 }

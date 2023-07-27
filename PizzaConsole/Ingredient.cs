@@ -1,6 +1,6 @@
 ﻿namespace PizzaConsole;
 
-public class Ingredient
+public class Ingredient: IElement
 {
     public string Name { get; set; }
     public Quantity Quantity { get; set; }
@@ -19,5 +19,10 @@ public class Ingredient
     public string CapitalizedName()
     {
         return char.ToUpper(Name[0]) + Name[1..];
+    }
+
+    public string Accept(Visitor visitor)
+    {
+        return visitor.visit(this);
     }
 }
