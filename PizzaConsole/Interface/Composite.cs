@@ -3,5 +3,5 @@
 public interface Composite
 {
     double GetCost();
-    String GetDescription();
+    string GetDescription();
 }

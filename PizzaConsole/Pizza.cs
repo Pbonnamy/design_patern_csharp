@@ -40,11 +40,23 @@ public class Pizza: IElement, Composite
 
     public double GetCost()
     {
-        throw new NotImplementedException();
+        double cost = 0;
+        foreach (var ingredient in Ingredients)
+        {
+            cost += ingredient.Cost;
+        }
+
+        return cost;
     }
 
     public string GetDescription()
     {
-        throw new NotImplementedException();
+        string description = "My Pizza : ";
+        foreach (var ingredient in Ingredients)
+        {
+            description += ingredient.GetDescription() + ", ";
+        }
+        description = description.TrimEnd(',', ' ');
+        return description;
     }
 }

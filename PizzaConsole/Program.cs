@@ -59,10 +59,36 @@ class Program
         parser.readFile(value);
         return parser.parse();
     }
+
+    private static void CreatePizza(List<Pizza> availablePizzas)
+    {
+        Console.WriteLine("Entrez le nom de la pizza : ");
+        var name = Console.ReadLine();
+        Console.WriteLine("Entrez le prix de la pizza : ");
+        var price = Console.ReadLine();
+        Console.WriteLine("Entrez les ingrédients de la pizza séparés par des virgules (le nombre d'ingrédients doit être écrit sour la forme '10.99') : ");
+        var ingredients = Console.ReadLine();
+        var ingredientsList = new List<Ingredient>();
+        foreach (var ingredient in ingredients.Split(','))
+        {
+            var ingredientSplit = ingredient.Trim();
+            var ingredientSplitArray = ingredientSplit.Trim().Split(' ', 3);
+            var quantity = new Quantity(decimal.Parse(ingredientSplitArray[0], CultureInfo.InvariantCulture), ingredientSplitArray[1]);
+            ingredientsList.Add(new Ingredient(ingredientSplitArray[2], quantity, 0.5*Decimal.ToDouble(quantity.Number!.Value) ));
+        }
+        availablePizzas.Add(new Pizza(name, decimal.Parse(price+1, CultureInfo.InvariantCulture), ingredientsList));    
+    }
+    
     
     private static void Loop(List<Pizza> availablePizzas) {
         while (true) {
             Console.WriteLine();
+            Console.Write("Souhaitez vous créer votre pizza (1) ou commander une pizza (2) ? ");
+            var choice = Console.ReadLine();
+            if (choice == "1")
+            {
+                CreatePizza(availablePizzas);
+            }
             Console.Write("Entrez une commande (votre commande doit être sous la forme : \"6 Pizza1, 2 Pizza2, {quantité} {nom}\", ou un nom de fichier : \"Regina.json\") : ");
             var order = Console.ReadLine()?.Split(',');
 

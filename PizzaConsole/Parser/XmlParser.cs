@@ -90,7 +90,6 @@ public class XmlParser: Parser
                     Console.WriteLine("Fichier XML parsé");
                 }
             }
-            // pizzas = JsonConvert.DeserializeObject<List<Pizza>>(xml) ?? new List<Pizza>();
         }
         return pizzas;
     }

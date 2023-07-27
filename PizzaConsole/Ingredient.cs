@@ -1,16 +1,26 @@
-﻿using PizzaConsole.Interface;
+﻿using Newtonsoft.Json;
+using PizzaConsole.Interface;
 
 namespace PizzaConsole;
 
-public class Ingredient: IElement
+public class Ingredient: IElement, Composite
 {
     public string Name { get; set; }
     public Quantity Quantity { get; set; }
+    public double Cost { get; set; }
     
+    [JsonConstructor]
     public Ingredient(string name, Quantity quantity)
     {
         Name = name;
         Quantity = quantity;
+    }
+    
+    public Ingredient(string name, Quantity quantity, double cost)
+    {
+        Name = name;
+        Quantity = quantity;
+        Cost = cost;
     }
     
     public void Display()
@@ -26,5 +36,15 @@ public class Ingredient: IElement
     public string Accept(Visitor visitor)
     {
         return visitor.visit(this);
+    }
+
+    public double GetCost()
+    {
+        return Cost;
+    }
+
+    public string GetDescription()
+    {
+        return Name;
     }
 }

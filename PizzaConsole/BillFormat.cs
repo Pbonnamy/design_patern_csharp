@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Globalization;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PizzaConsole.Exports;
 using PizzaConsole.Interface;
@@ -14,7 +15,7 @@ public class BillFormat
                 
         foreach (var pizzaElement in pizzas)
         {
-            command += $"\n<pizza>\n<quantity>{pizzaElement.quantity}</quantity>{pizzaElement.pizza.Accept(visitor)}</pizza>";
+            command += $"\n<pizza>\n<quantity>{pizzaElement.quantity}</quantity>{pizzaElement.pizza.Accept(visitor)}<supplement>{pizzaElement.pizza.GetCost()}</supplement>\n</pizza>";
         }
         command += "\n</command>";
         Console.WriteLine(command);
@@ -34,7 +35,7 @@ public class BillFormat
         String command2 = "{\n\"command\": [";
         foreach (var pizzaElement in pizzas)
         {
-            command2 += $"\n{{\n\"quantity\":\"{pizzaElement.quantity}\",{pizzaElement.pizza.Accept(visitor)}}},";
+            command2 += $"\n{{\n\"quantity\":{pizzaElement.quantity},{pizzaElement.pizza.Accept(visitor)}, \"supplement\": {pizzaElement.pizza.GetCost().ToString(CultureInfo.InvariantCulture)}}},";
         }
         command2 = command2.Remove(command2.Length - 1);
         command2 += "\n]\n}";
