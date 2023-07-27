@@ -1,4 +1,4 @@
-﻿namespace PizzaConsole;
+﻿namespace PizzaConsole.Interface;
 
 public interface Visitor
 {

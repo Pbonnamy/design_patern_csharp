@@ -1,4 +1,6 @@
-﻿namespace PizzaConsole;
+﻿using PizzaConsole.Interface;
+
+namespace PizzaConsole;
 
 interface IElement
 {

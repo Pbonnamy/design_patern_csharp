@@ -1,4 +1,6 @@
-﻿namespace PizzaConsole;
+﻿using PizzaConsole.Interface;
+
+namespace PizzaConsole;
 
 public class Pizza: IElement
 {

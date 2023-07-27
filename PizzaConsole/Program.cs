@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using PizzaConsole;
 using PizzaConsole.Exports;
+using PizzaConsole.Interface;
+using PizzaConsole.Parser;
 
 class Program
 {
@@ -37,16 +39,49 @@ class Program
         Loop(availablePizzas);
     }
 
+
+    private static List<Pizza> parseFile(String value)
+    {
+        Parser parser;
+        if (value.Contains(".json"))
+        {
+            parser = new JsonParser();
+        }
+        else if (value.Contains(".xml"))
+        {
+            parser = new XmlParser();
+        }
+        else
+        {
+            Console.WriteLine("Le fichier n'est pas au bon format");
+            return new List<Pizza>();
+        }
+        parser.readFile(value);
+        return parser.parse();
+    }
+    
     private static void Loop(List<Pizza> availablePizzas) {
         while (true) {
             Console.WriteLine();
-            Console.Write("Entrez une commande (votre commande doit être sous la forme : \"6 Pizza1, 2 Pizza2, {quantité} {nom}\") : ");
+            Console.Write("Entrez une commande (votre commande doit être sous la forme : \"6 Pizza1, 2 Pizza2, {quantité} {nom}\", ou un nom de fichier : \"Regina.json\") : ");
             var order = Console.ReadLine()?.Split(',');
 
             if (order == null) continue;
-            
             var pizzas = new List<(int quantity, Pizza pizza)>();
-            
+            if (order[0].Contains("."))
+            {
+                var parsefile = parseFile(order[0]);
+                if (parsefile.Count == 0)
+                {
+                    continue;
+                }
+                foreach (var pizza in parsefile)
+                {
+                    pizzas.Add((1, pizza));
+                }
+                HandleChoices(pizzas);
+                continue;
+            }
             var error = false;
             
             foreach (var input in order) {
@@ -114,7 +149,6 @@ class Program
 
     private static void GetBillFormat(String choice, List<(int quantity, Pizza pizza)> pizzas)
     {
-        String totalPrice = "";
         switch (choice)
         {
             case "2":
@@ -123,10 +157,9 @@ class Program
                 
                 foreach (var pizzaElement in pizzas)
                 {
-                    totalPrice += pizzaElement.quantity * pizzaElement.pizza.Price;
                     command += $"\n<pizza>\n<quantity>{pizzaElement.quantity}</quantity>{pizzaElement.pizza.Accept(visitor)}</pizza>";
                 }
-                command += $"\n<totalPrice>{totalPrice}</totalPrice></command>";
+                command += "\n</command>";
                 Console.WriteLine(command);
                 Console.WriteLine("Souhaitez vous l'enregistrer ?");
                 Console.Write("Oui (o), Non (n): ");
@@ -142,11 +175,10 @@ class Program
                 String command2 = "{\n\"command\": [";
                 foreach (var pizzaElement in pizzas)
                 {
-                    totalPrice += pizzaElement.quantity * pizzaElement.pizza.Price;
                     command2 += $"\n{{\n\"quantity\":\"{pizzaElement.quantity}\",{pizzaElement.pizza.Accept(visitor2)}}},";
                 }
                 command2 = command2.Remove(command2.Length - 1);
-                command2 += $"\n],\n\"totalPrice\": \"{totalPrice}\"\n}}";
+                command2 += "\n]\n}}";
                 Console.WriteLine(command2);
                 Console.WriteLine("Souhaitez vous l'enregistrer ?");
                 Console.Write("Oui (o), Non (n): ");
