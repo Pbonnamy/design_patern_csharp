@@ -72,24 +72,8 @@ class Program
         }
         else if (value.EndsWith(".xml"))
         {
-            parser = new XmlVisitorParser();
             String absolutePath = Path.GetFullPath(value);
-            XmlDocument doc = new XmlDocument();
-            doc.Load(absolutePath);
-            XmlNodeList pizzaList = doc.SelectNodes("/Pizzas/Pizza");
-            if (pizzaList != null)
-            {
-                foreach (XmlNode pizzaData in pizzaList)
-                {
-                    Pizza pizza = new Pizza();
-                    pizza.Accept(parser, pizza);
-                    pizzas.Add(pizza);
-                }
-            }
-            else
-            {
-                pizzas = new List<Pizza>();
-            }
+            pizzas = ParserClass.ParseXml(absolutePath);
         }
         else
         {
