@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Xml;
+using Newtonsoft.Json;
 using PizzaConsole;
 using PizzaConsole.Exports;
 using PizzaConsole.Interface;
@@ -42,22 +44,59 @@ class Program
 
     private static List<Pizza> parseFile(String value)
     {
-        Parser parser;
-        if (value.Contains(".json"))
+        List<Pizza> pizzas = new List<Pizza>();
+        VisitorParser parser;
+        if (value.EndsWith(".json"))
         {
-            parser = new JsonParser();
+            parser = new JsonVisitorParser();
+            String absolutePath = Path.GetFullPath(value);
+            using (StreamReader r = new StreamReader(absolutePath))
+            {
+                string json = r.ReadToEnd();
+                List<Pizza> pizzaJson = JsonConvert.DeserializeObject<List<Pizza>>(json) ?? new List<Pizza>();
+                if (pizzaJson.Count != 0)
+                {
+                    foreach (var pizzaData in pizzaJson)
+                    {
+                        Pizza pizza = new Pizza();
+                        pizza.Accept(parser, pizzaData);
+                        pizzas.Add(pizza);
+                    }
+                }
+                else
+                {
+                    pizzas = new List<Pizza>();
+                }
+                
+            }
         }
-        else if (value.Contains(".xml"))
+        else if (value.EndsWith(".xml"))
         {
-            parser = new XmlParser();
+            parser = new XmlVisitorParser();
+            String absolutePath = Path.GetFullPath(value);
+            XmlDocument doc = new XmlDocument();
+            doc.Load(absolutePath);
+            XmlNodeList pizzaList = doc.SelectNodes("/Pizzas/Pizza");
+            if (pizzaList != null)
+            {
+                foreach (XmlNode pizzaData in pizzaList)
+                {
+                    Pizza pizza = new Pizza();
+                    pizza.Accept(parser, pizza);
+                    pizzas.Add(pizza);
+                }
+            }
+            else
+            {
+                pizzas = new List<Pizza>();
+            }
         }
         else
         {
             Console.WriteLine("Le fichier n'est pas au bon format");
             return new List<Pizza>();
         }
-        parser.readFile(value);
-        return parser.parse();
+        return pizzas;
     }
 
     private static void CreatePizza(List<Pizza> availablePizzas)

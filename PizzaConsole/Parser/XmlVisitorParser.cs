@@ -2,17 +2,90 @@
 
 namespace PizzaConsole.Parser;
 
-public class XmlParser: Parser
+public class XmlVisitorParser: VisitorParser
 {
-    private String? _path;
+
+    public List<Pizza> parsedPizzas { get; set; }
     
-    public void readFile(string path)
+    private string _path;
+
+    public List<Ingredient> parse(Ingredient ingredient)
     {
-        _path = path;
+        throw new NotImplementedException();
     }
 
-    public List<Pizza> parse()
+    private Ingredient ParseIngredients(XmlNode ingredient)
     {
+        String ingredientName = "";
+        String ingredientQuantity = "";
+        String ingredientUnit = "";
+        foreach (XmlElement ingredientChildNode in ingredient.ChildNodes)
+        {
+            if (ingredientChildNode.Name == "Name")
+            {
+                ingredientName = ingredientChildNode.InnerText;
+            }
+            else if (ingredientChildNode.Name == "Quantity")
+            {
+                foreach (var quantityNode in ingredientChildNode.ChildNodes)
+                {
+                    if (quantityNode is XmlElement quantityElement)
+                    {
+                        if (quantityElement.Name == "Number")
+                        {
+                            ingredientQuantity = quantityElement.InnerText;
+                        }
+                        else if (quantityElement.Name == "Unit")
+                        {
+                            ingredientUnit = quantityElement.InnerText;
+                        }
+                    }
+                    else if (quantityNode is XmlText quantityText)
+                    {
+                        throw new Exception("Impossible de parser le fichier XML");
+                    }
+                }
+                                        
+            }
+        }
+        return new Ingredient(ingredientName, new Quantity(decimal.Parse(ingredientQuantity.Replace('.', ',')), ingredientUnit));
+    }
+
+
+    public void visit(Pizza pizza)
+    {
+        /*try
+        {
+            var name = "";
+            decimal price = 0m;
+            List<Ingredient> ingredients = new List<Ingredient>();
+            foreach (XmlElement childNode in pizza.ChildNodes)
+            {
+                if (childNode.Name == "Name")
+                {
+                    name += childNode.InnerText;
+                }
+                else if (childNode.Name == "Price")
+                {
+                    price = decimal.Parse(childNode.InnerText.Replace('.', ','));
+                }
+                else if (childNode.Name == "Ingredients")
+                {
+                    foreach (XmlElement ingredientNode in childNode.ChildNodes)
+                    {
+                        ingredients.Add(ParseIngredients(ingredientNode));
+                    }
+                }
+            }
+
+            parsedPizzas.Add(new Pizza(name, price, ingredients));
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Console.WriteLine("Impossible de parser le fichier XML");
+        }*/
+
         XmlDocument xmlDocument = new XmlDocument();
         List<Pizza> pizzas = new List<Pizza>();
         using (StreamReader r = new StreamReader(_path))
@@ -40,7 +113,8 @@ public class XmlParser: Parser
                         {
                             foreach (XmlElement ingredientNode in childNode.ChildNodes)
                             {
-                                String ingredientName = "";
+                                
+                                /*String ingredientName = "";
                                 String ingredientQuantity = "";
                                 String ingredientUnit = "";
                                 foreach (XmlElement ingredientChildNode in ingredientNode.ChildNodes)
@@ -71,9 +145,8 @@ public class XmlParser: Parser
                                         }
                                         
                                     }
-                                }
-                                ingredients.Add(
-                                    new Ingredient(ingredientName, new Quantity(decimal.Parse(ingredientQuantity.Replace('.', ',')), ingredientUnit)));
+                                }*/
+                                //ingredients.Add(new Ingredient(ingredientName, new Quantity(decimal.Parse(ingredientQuantity.Replace('.', ',')), ingredientUnit)));
                             }
                         }
                     }
@@ -91,6 +164,16 @@ public class XmlParser: Parser
                 }
             }
         }
-        return pizzas;
+        //return pizzas;
+    }
+
+    public void visit(Pizza pizza, Pizza pizzaData)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void visit(Ingredient ingredient)
+    {
+        throw new NotImplementedException();
     }
 }

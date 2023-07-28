@@ -11,14 +11,13 @@ public class JsonVisitor: Visitor{
 
         foreach (var ingredient in pizza.Ingredients)
         {
-            ingredients += ingredient.Accept(this);
+            ingredients += ingredient.Accept(this) + ",";
         }
-        ingredients = ingredients.Remove(ingredients.Length - 1);
         return $"\n\"name\":\"{pizza.Name}\",\n\"ingredients\":[{ingredients}],\n\"price\":{pizza.Price.ToString(CultureInfo.InvariantCulture)}\n";
     }
 
     public string visit(Ingredient ingredient)
     {
-        return $"{{\n\"name\":\"{ingredient.Name}\",\n\"quantity\":{ingredient.Quantity.Number.Value.ToString(CultureInfo.InvariantCulture)},\n\"unit\":\"{ingredient.Quantity.Unit}\"\n}},";
+        return $"{{\n\"name\":\"{ingredient.Name}\",\n\"quantity\":{ingredient.Quantity.Number.Value.ToString(CultureInfo.InvariantCulture)},\n\"unit\":\"{ingredient.Quantity.Unit}\"\n}}";
     }
 }

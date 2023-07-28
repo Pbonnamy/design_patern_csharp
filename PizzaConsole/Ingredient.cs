@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PizzaConsole.Interface;
+using PizzaConsole.Parser;
 
 namespace PizzaConsole;
 
@@ -36,6 +37,16 @@ public class Ingredient: IElement, Composite
     public string Accept(Visitor visitor)
     {
         return visitor.visit(this);
+    }
+
+    public void Accept(VisitorParser visitor, Pizza value)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Accept(VisitorParser visitor, Ingredient value)
+    {
+        throw new NotImplementedException();
     }
 
     public double GetCost()

@@ -1,4 +1,5 @@
 ﻿using PizzaConsole.Interface;
+using PizzaConsole.Parser;
 
 namespace PizzaConsole;
 
@@ -8,6 +9,7 @@ public class Pizza: IElement, Composite
     public decimal Price { get; set; }
     public List<Ingredient> Ingredients { get; set; }
     
+    public Pizza(){}
     public Pizza(string name, decimal price, List<Ingredient> ingredients)
     {
         Name = name;
@@ -37,6 +39,17 @@ public class Pizza: IElement, Composite
     {
         return visitor.visit(this);
     }
+
+    public void Accept(VisitorParser visitor, Pizza value)
+    {
+        visitor.visit(this, value);
+    }
+
+    public void Accept(VisitorParser visitor, Ingredient value)
+    {
+        throw new NotImplementedException();
+    }
+
 
     public double GetCost()
     {
