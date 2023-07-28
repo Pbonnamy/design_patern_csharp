@@ -85,21 +85,29 @@ class Program
 
     private static void CreatePizza(List<Pizza> availablePizzas)
     {
-        Console.WriteLine("Entrez le nom de la pizza : ");
-        var name = Console.ReadLine();
-        Console.WriteLine("Entrez le prix de la pizza : ");
-        var price = Console.ReadLine();
-        Console.WriteLine("Entrez les ingrédients de la pizza séparés par des virgules (le nombre d'ingrédients doit être écrit sour la forme '10.99') : ");
-        var ingredients = Console.ReadLine();
-        var ingredientsList = new List<Ingredient>();
-        foreach (var ingredient in ingredients.Split(','))
+        try
         {
-            var ingredientSplit = ingredient.Trim();
-            var ingredientSplitArray = ingredientSplit.Trim().Split(' ', 3);
-            var quantity = new Quantity(decimal.Parse(ingredientSplitArray[0], CultureInfo.InvariantCulture), ingredientSplitArray[1]);
-            ingredientsList.Add(new Ingredient(ingredientSplitArray[2], quantity, 0.5*Decimal.ToDouble(quantity.Number!.Value) ));
+            Console.WriteLine("Entrez le nom de la pizza : ");
+            var name = Console.ReadLine();
+            Console.WriteLine("Entrez le prix de la pizza : ");
+            var price = Console.ReadLine();
+            Console.WriteLine("Entrez les ingrédients de la pizza séparés par des virgules (les ingrédients doivent être au format 4 morceaux fromages de chèvres: {quantity} {unit} {name}) : ");
+            var ingredients = Console.ReadLine();
+            var ingredientsList = new List<Ingredient>();
+            foreach (var ingredient in ingredients.Split(','))
+            {
+                var ingredientSplit = ingredient.Trim();
+                var ingredientSplitArray = ingredientSplit.Trim().Split(' ', 3);
+                var quantity = new Quantity(decimal.Parse(ingredientSplitArray[0], CultureInfo.InvariantCulture), ingredientSplitArray[1]);
+                ingredientsList.Add(new Ingredient(ingredientSplitArray[2], quantity, 1.5*Decimal.ToDouble(quantity.Number!.Value) ));
+            }
+            availablePizzas.Add(new Pizza(name, decimal.Parse(price+1, CultureInfo.InvariantCulture), ingredientsList));
+            Console.WriteLine($"La pizza {name} a bien été ajoutée à la liste des pizzas disponibles");
         }
-        availablePizzas.Add(new Pizza(name, decimal.Parse(price+1, CultureInfo.InvariantCulture), ingredientsList));    
+        catch (Exception)
+        {
+            Console.WriteLine("Impossible de créer la pizza, veuillez vérifier les informations entrées");
+        }
     }
     
     
