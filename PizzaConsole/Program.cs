@@ -45,30 +45,10 @@ class Program
     private static List<Pizza> parseFile(String value)
     {
         List<Pizza> pizzas = new List<Pizza>();
-        VisitorParser parser;
         if (value.EndsWith(".json"))
         {
-            parser = new JsonVisitorParser();
-            String absolutePath = Path.GetFullPath(value);
-            using (StreamReader r = new StreamReader(absolutePath))
-            {
-                string json = r.ReadToEnd();
-                List<Pizza> pizzaJson = JsonConvert.DeserializeObject<List<Pizza>>(json) ?? new List<Pizza>();
-                if (pizzaJson.Count != 0)
-                {
-                    foreach (var pizzaData in pizzaJson)
-                    {
-                        Pizza pizza = new Pizza();
-                        pizza.Accept(parser, pizzaData);
-                        pizzas.Add(pizza);
-                    }
-                }
-                else
-                {
-                    pizzas = new List<Pizza>();
-                }
-                
-            }
+            String absolutePath = Path.GetFullPath(@""+value);
+            pizzas = ParserClass.ParseJson(absolutePath);
         }
         else if (value.EndsWith(".xml"))
         {

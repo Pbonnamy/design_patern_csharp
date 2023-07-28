@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using Newtonsoft.Json;
 using PizzaConsole.Interface;
 using PizzaConsole.Parser;
 
@@ -6,6 +7,40 @@ namespace PizzaConsole;
 
 public class ParserClass
 {
+
+    public static List<Pizza> ParseJson(string jsonData)
+    {
+        var parser = new JsonVisitorParser();
+        var pizzas = new List<Pizza>();
+        try
+        {
+            using (StreamReader r = new StreamReader(jsonData))
+            {
+                string json = r.ReadToEnd();
+                List<Pizza> pizzaJson = JsonConvert.DeserializeObject<List<Pizza>>(json) ?? new List<Pizza>();
+                if (pizzaJson.Count != 0)
+                {
+                    foreach (var pizzaData in pizzaJson)
+                    {
+                        Pizza pizza = new Pizza();
+                        pizza.Accept(parser, pizzaData);
+                        pizzas.Add(pizza);
+                    }
+                }
+                else
+                {
+                    pizzas = new List<Pizza>();
+                }
+                
+            }
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Impossible de parser le fichier JSON");
+        }
+        return pizzas;
+    }
+
     public static List<Pizza> ParseXml(string xmlData)
     {
         var xmlParser = new XmlVisitorParser();
